@@ -16,17 +16,15 @@ const MainButtons = styled.div`
   flex-wrap: wrap;
 `;
 
-const ButtonGroup = ({ currentPin, onEmitPin, onRegeneratePins, onEdit }) => {
-    return (
-        <Wrapper>
-            <MainButtons>
-                <Button onClick={onEmitPin} icon={<Key color='salmon' size={18}/>}>Emit PIN</Button>
-                <Button onClick={() => copyToClipboard(currentPin)} icon={<Copy color='salmon' size={18}/>}>Copy PIN</Button>
-                <Button onClick={onRegeneratePins} icon={<RefreshCw color='salmon' size={18}/>}>Regenerate</Button>
-            </MainButtons>
-            <Button onClick={onEdit} icon={<Settings color='black' size={18}/>}/>
-        </Wrapper>
-    );
-};
+const ButtonGroup = ({ currentPin, onEmitPin, onRegeneratePins, onEdit }) => (
+    <Wrapper>
+        <MainButtons>
+            <Button onClick={onEmitPin} icon={<Key color='salmon' size={18}/>}>Emit PIN</Button>
+            <Button onClick={() => copyToClipboard(currentPin)} icon={<Copy color='salmon' size={18}/>}>Copy PIN</Button>
+            <Button onClick={onRegeneratePins} icon={<RefreshCw color='salmon' size={18}/>}>Regenerate</Button>
+        </MainButtons>
+        <Button onClick={onEdit} icon={<Settings color='black' size={18}/>}/>
+    </Wrapper>
+);
 
 export default ButtonGroup;

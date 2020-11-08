@@ -19,13 +19,11 @@ const Content = styled.div`
     margin: 0 6px;
 `;
 
-const Button = ({ icon, children, ...props }) => {
-    return (
-        <ButtonStyled {...props}>
-            {icon}
-            {children ? <Content>{children}</Content> : null}
-        </ButtonStyled>
-    );
-};
+const Button = ({ icon, children, ...props }) => (
+    <ButtonStyled {...props}>
+        {icon}
+        {children ? <Content>{children}</Content> : null}
+    </ButtonStyled>
+);
 
 export default Button;

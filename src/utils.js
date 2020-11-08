@@ -7,7 +7,7 @@ export function copyToClipboard(pin){
     input.remove();
 }
 
-export function validPins(pin, config) {
+export function validatePin(pin, config) {
   let incremental = true;
   if (config.excludeIncremental) {
     for (let i=0; i<pin.length-1; i++) {

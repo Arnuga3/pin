@@ -9,14 +9,12 @@ const Wrapper = styled.div`
   margin-top: 16px;
 `;
 
-const LabelGroup = ({ availablePins, takenPins, invalidCombinations }) => {
-    return (
-        <Wrapper>
-            <Label label={availablePins?.length} color='darkcyan' icon={<Check color='white'/>}/>
-            <Label label={takenPins?.length} color='chocolate' icon={<Key color='white'/>}/>
-            <Label label={invalidCombinations} color='grey' icon={<Slash color='white'/>}/>
-        </Wrapper>
-    );
-};
+const LabelGroup = ({ availablePins, takenPins, config }) => (
+    <Wrapper>
+        <Label label={availablePins?.length} color='darkcyan' icon={<Check color='white'/>}/>
+        <Label label={takenPins?.length} color='chocolate' icon={<Key color='white'/>}/>
+        <Label label={config?.total - (availablePins?.length + takenPins?.length)} color='grey' icon={<Slash color='white'/>}/>
+    </Wrapper>
+);
 
 export default LabelGroup;

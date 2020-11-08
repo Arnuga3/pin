@@ -18,8 +18,8 @@ const DigitContainer = styled.div`
     flex: 1;
 `;
 
-const PinDisplay = ({ pin, pinSize }) => {
-    const digits = pin ? [...pin] : new Array(pinSize).fill('-');;
+const PinDisplay = ({ pin, config }) => {
+    const digits = pin ? [...pin] : new Array(config.pinSize).fill('-');;
     return (
         <DisplayWrapper>
             {digits.map((digit, i) => <DigitContainer key={i}>{digit}</DigitContainer>)}

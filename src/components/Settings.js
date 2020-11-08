@@ -1,8 +1,8 @@
-import React, { useState, useCallback, useContext } from 'react';
+import React, { useState, useCallback } from 'react';
 import styled from 'styled-components';
 import { Save, XCircle } from 'react-feather';
 import Button from './Button';
-import { ConfigContext } from "../ConfigContext";
+import { useConfigStorage } from "../hooks/hookConfig";
 
 const Wrapper = styled.div`
     display: flex;
@@ -33,13 +33,14 @@ const Input = styled.input`
     border-radius: 2px;
 `;
 
-const Settings = ({ onClose }) => {
-    const [config, setConfig] = useContext(ConfigContext);
+const Settings = ({ onSave, onClose }) => {
+    const [config, setConfig] = useConfigStorage();
     const [state, setState] = useState(config);
+    const { uniqueDigitsNum, excludeIncremental, pinSize } = state;
 
     const handleSave = () => {
         if (validUniqueDigitValue()) {
-            setConfig({ ...config, ...state });
+            onSave({ ...config, ...state });
             onClose();
         }
     };
@@ -52,8 +53,8 @@ const Settings = ({ onClose }) => {
     };
 
     const validUniqueDigitValue = useCallback(() => {
-        return +state.uniqueDigitsNum >= 0 && +state.uniqueDigitsNum <= +config.pinSize;
-    }, [state.uniqueDigitsNum]);
+        return +uniqueDigitsNum >= 1 && +uniqueDigitsNum <= +pinSize;
+    }, [uniqueDigitsNum]);
 
     return (
         <Wrapper>
@@ -61,9 +62,9 @@ const Settings = ({ onClose }) => {
                 <Input
                     id='unique'
                     type='number'
-                    min={0}
-                    max={config.pinSize || 0}
-                    defaultValue={state.uniqueDigitsNum}
+                    min={1}
+                    max={pinSize || 0}
+                    defaultValue={uniqueDigitsNum}
                     name='uniqueDigitsNum'
                     onChange={handleChange}
                     style={ validUniqueDigitValue() ? {} : { borderColor: 'salmon' } }
@@ -75,7 +76,7 @@ const Settings = ({ onClose }) => {
                     id='incremental'
                     type='checkbox'
                     name='excludeIncremental'
-                    defaultChecked={state.excludeIncremental}
+                    defaultChecked={excludeIncremental}
                     onChange={handleChange}
                 />
                 <InputLabel htmlFor='incremental'>Exclude incremental order PINs, ex. "1234", "4567"</InputLabel>

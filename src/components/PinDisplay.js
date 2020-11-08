@@ -10,11 +10,12 @@ const DigitContainer = styled.div`
     display: flex;
     justify-content: center;
     align-items: center;
-    width: 80px;
     height: 100px;
+    margin: 4px;
     background-color: rgba(0,0,0,.07);
     font-size: 5em;
     color: rgba(0,0,0,.7);
+    flex: 1;
 `;
 
 const PinDisplay = ({ pin, pinSize }) => {

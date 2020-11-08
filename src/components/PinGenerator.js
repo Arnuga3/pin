@@ -1,21 +1,23 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
-import { Check, Slash, Key, RefreshCw, Unlock, Copy } from "react-feather";
-import { BaseN } from "js-combinatorics";
-import PinDisplay from "./PinDisplay";
-import DataLabel from './DataLabel';
-import Button from './Button';
-const seedrandom = require("seedrandom");
+import { BaseN } from 'js-combinatorics';
+const seedrandom = require('seedrandom');
+import ButtonGroup from './ButtonGroup';
+import PinDisplay from './PinDisplay';
+import LabelGroup from './LabelGroup';
 
-import { useAvailablePinsStorage } from "../hooks/hookAvailablePins";
-import { useTakenPinsStorage } from "../hooks/hookTakenPins";
+import { useAvailablePinsStorage } from '../hooks/hookAvailablePins';
+import { useTakenPinsStorage } from '../hooks/hookTakenPins';
+import { validPins } from '../utils';
 
 const Wrapper = styled.div`
-  width: 400px;
+  max-width: 400px;
+  min-widht: 350px;
   padding: 24px;
   border: 1px solid rgba(0,0,0,.07);
   box-shadow: 1px 1px rgba(0,0,0,.1);
   margin: 24px auto;
+  font-family: sans-serif;
 
   *,*:focus,*:hover {
     outline:none;
@@ -36,19 +38,7 @@ const Divider = styled.hr`
   margin-top: 12px;
 `;
 
-const Labels = styled.div`
-  display: flex;
-  justify-content: space-between;
-  margin-top: 16px;
-`;
-
-const Buttons = styled.div`
-  display: flex;
-  justify-content: space-between;
-  margin-bottom: 8px;
-`;
-
-const seed = "0123456789";
+const seed = '0123456789';
 const size = 4;
 const total = Math.pow(seed.length, size);
 
@@ -63,19 +53,7 @@ const PinGenerator = () => {
     else setState({ ...state, invalidCombinations: total - (availablePins.length + takenPins.length) });
   }, []);
 
-  const generatePins = () => {
-    const allCombinations = new BaseN(seed, size);
-    const totalCombinations = [...allCombinations];
-    const validCombinations = totalCombinations
-      .map(arr => arr.join(""))
-      .filter(validPins);
-
-    setAvailablePins(validCombinations);
-    setTakenPins([]);
-    setState({ ...state, invalidCombinations: total - validCombinations.length, currentPin: null });
-  };
-
-  const generatePin = () => {
+  const emitPin = () => {
     const rand = seedrandom();
     const index = Math.floor(rand() * availablePins.length);
     const pin = availablePins[index];
@@ -85,13 +63,16 @@ const PinGenerator = () => {
     setState({ ...state, currentPin: pin });
   };
 
-  const copy = () => {
-    var input = document.createElement('textarea')
-    input.innerText = state.currentPin;
-    document.body.appendChild(input);
-    input.select();
-    document.execCommand('copy')
-    input.remove();
+  const regeneratePins = () => {
+    const allCombinations = new BaseN(seed, size);
+    const totalCombinations = [...allCombinations];
+    const validCombinations = totalCombinations
+      .map(arr => arr.join(''))
+      .filter(validPins);
+
+    setAvailablePins(validCombinations);
+    setTakenPins([]);
+    setState({ ...state, invalidCombinations: total - validCombinations.length, currentPin: null });
   };
 
   return (
@@ -99,24 +80,19 @@ const PinGenerator = () => {
       <Title>PIN</Title>
       <Subtitle>Generator</Subtitle>
       <Divider/>
-      <Buttons>
-        <Button onClick={generatePin} icon={<Unlock color='salmon' size={18}/>}>Emit PIN</Button>
-        <Button onClick={copy} icon={<Copy color='salmon' size={18}/>}>Copy PIN</Button>
-        <Button onClick={generatePins} icon={<RefreshCw color='salmon' size={18}/>}>Regenerate</Button>
-      </Buttons>
+      <ButtonGroup
+        currentPin={state.currentPin}
+        onEmitPin={emitPin}
+        onRegeneratePins={regeneratePins}
+      />
       <PinDisplay pin={state.currentPin} pinSize={size}/>
-      <Labels>
-        <DataLabel label={availablePins?.length} color='darkgreen' icon={<Check color='white'/>}/>
-        <DataLabel label={takenPins?.length} color='indigo' icon={<Key color='white'/>}/>
-        <DataLabel label={state.invalidCombinations} color='grey' icon={<Slash color='white'/>}/>
-      </Labels>
+      <LabelGroup
+        availablePins={availablePins}
+        takenPins={takenPins}
+        invalidCombinations={state.invalidCombinations}
+      />
     </Wrapper>
   );
 };
 
 export default PinGenerator;
-
-const validPins = combination => {
-  const uniqueNumbers = new Set(combination);
-  return uniqueNumbers.size > 2;
-};

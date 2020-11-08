@@ -7,13 +7,13 @@ const Wrapper = styled.span`
     width: 90px;
 `;
 
-const Label = styled.span`
+const Text = styled.span`
     color: ${({color}) => color};
     padding-left: 8px;
     flex: 1;
 `;
 
-const IconLabel = styled.div`
+const Icon = styled.div`
     display: flex;
     align-items: center;
     justify-content: center;
@@ -22,11 +22,11 @@ const IconLabel = styled.div`
     height: 28px;
 `;
 
-const DataLabel = ({ label=0, color, icon }) => (
+const Label = ({ label=0, color, icon }) => (
     <Wrapper>
-        <Label color={color}>{label}</Label>
-        <IconLabel color={color}>{icon}</IconLabel>
+        <Text color={color}>{label}</Text>
+        <Icon color={color}>{icon}</Icon>
     </Wrapper>
 );
 
-export default DataLabel;
+export default Label;

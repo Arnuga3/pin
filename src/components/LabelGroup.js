@@ -12,8 +12,8 @@ const Wrapper = styled.div`
 const LabelGroup = ({ availablePins, takenPins, invalidCombinations }) => {
     return (
         <Wrapper>
-            <Label label={availablePins?.length} color='darkgreen' icon={<Check color='white'/>}/>
-            <Label label={takenPins?.length} color='indigo' icon={<Key color='white'/>}/>
+            <Label label={availablePins?.length} color='darkcyan' icon={<Check color='white'/>}/>
+            <Label label={takenPins?.length} color='chocolate' icon={<Key color='white'/>}/>
             <Label label={invalidCombinations} color='grey' icon={<Slash color='white'/>}/>
         </Wrapper>
     );

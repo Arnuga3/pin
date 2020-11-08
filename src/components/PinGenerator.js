@@ -1,13 +1,15 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import styled from 'styled-components';
 import { BaseN } from 'js-combinatorics';
 const seedrandom = require('seedrandom');
 import ButtonGroup from './ButtonGroup';
 import PinDisplay from './PinDisplay';
 import LabelGroup from './LabelGroup';
+import Settings from './Settings';
 
 import { useAvailablePinsStorage } from '../hooks/hookAvailablePins';
 import { useTakenPinsStorage } from '../hooks/hookTakenPins';
+import { ConfigContext } from "../ConfigContext";
 import { validPins } from '../utils';
 
 const Wrapper = styled.div`
@@ -38,19 +40,26 @@ const Divider = styled.hr`
   margin-top: 12px;
 `;
 
-const seed = '0123456789';
-const size = 4;
-const total = Math.pow(seed.length, size);
+const defaultState = {
+  currentPin: null,
+  edit: false
+};
 
 const PinGenerator = () => {
   const [availablePins, setAvailablePins] = useAvailablePinsStorage();
   const [takenPins, setTakenPins] = useTakenPinsStorage();
 
-  const [state, setState] = useState({ currentPin: null });
+  const [state, setState] = useState(defaultState);
+  const { currentPin, invalidCombinations, edit } = state;
+  const [config] = useContext(ConfigContext);
 
   useEffect(() => {
-    if (!availablePins || !takenPins) generatePins();
-    else setState({ ...state, invalidCombinations: total - (availablePins.length + takenPins.length) });
+    regeneratePins();
+  }, [config]);
+
+  useEffect(() => {
+    if (!availablePins || !takenPins) regeneratePins();
+    else setState({ ...state, invalidCombinations: config.total - (availablePins.length + takenPins.length) });
   }, []);
 
   const emitPin = () => {
@@ -64,15 +73,15 @@ const PinGenerator = () => {
   };
 
   const regeneratePins = () => {
-    const allCombinations = new BaseN(seed, size);
+    const allCombinations = new BaseN(config.seed, config.pinSize);
     const totalCombinations = [...allCombinations];
     const validCombinations = totalCombinations
       .map(arr => arr.join(''))
-      .filter(validPins);
+      .filter(pin => validPins(pin, config));
 
     setAvailablePins(validCombinations);
     setTakenPins([]);
-    setState({ ...state, invalidCombinations: total - validCombinations.length, currentPin: null });
+    setState({ ...state, invalidCombinations: config.total - validCombinations.length, currentPin: null });
   };
 
   return (
@@ -80,17 +89,22 @@ const PinGenerator = () => {
       <Title>PIN</Title>
       <Subtitle>Generator</Subtitle>
       <Divider/>
-      <ButtonGroup
-        currentPin={state.currentPin}
-        onEmitPin={emitPin}
-        onRegeneratePins={regeneratePins}
-      />
-      <PinDisplay pin={state.currentPin} pinSize={size}/>
-      <LabelGroup
-        availablePins={availablePins}
-        takenPins={takenPins}
-        invalidCombinations={state.invalidCombinations}
-      />
+      {edit ? <Settings onClose={() => setState({ ...state, edit: false })}/> :
+        <React.Fragment>
+          <ButtonGroup
+            currentPin={currentPin}
+            onEmitPin={emitPin}
+            onRegeneratePins={regeneratePins}
+            onEdit={() => setState({ ...state, edit: true })}
+          />
+          <PinDisplay pin={currentPin} pinSize={config.pinSize}/>
+          <LabelGroup
+            availablePins={availablePins}
+            takenPins={takenPins}
+            invalidCombinations={invalidCombinations}
+          />
+        </React.Fragment>
+      }
     </Wrapper>
   );
 };

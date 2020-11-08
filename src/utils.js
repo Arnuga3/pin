@@ -7,7 +7,16 @@ export function copyToClipboard(pin){
     input.remove();
 }
 
-export function validPins(combination) {
-  const uniqueNumbers = new Set(combination);
-  return uniqueNumbers.size > 2;
+export function validPins(pin, config) {
+  let incremental = true;
+  if (config.excludeIncremental) {
+    for (let i=0; i<pin.length-1; i++) {
+      if (+pin[i] !== (+pin[i+1] + 1)) {
+        incremental = false;
+        break;
+      }
+    }
+  }
+  const validIncremental = !config.excludeIncremental || (config.excludeIncremental && !incremental);
+  return validIncremental && new Set(pin).size >= +config.uniqueDigitsNum;
 }

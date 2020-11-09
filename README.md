@@ -1,4 +1,4 @@
- # PIN Generator - documentation
+ # PIN Generator
  
  - [Overview](#overview)
  - [Requirements Specification](#requirements)

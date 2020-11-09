@@ -64,8 +64,8 @@ The user interface consists of a simple card with some interactive elements and 
 
  - Emit many PINs at once
  - Add functionality to export/download PINs in various formats
- - Convert application to PWA for offline use, or rewrite to React Native with little effort
- - Make the data and config more secure
+ - Convert application to PWA for offline use, or rewrite to React Native with a little effort
+ - Make the data and config secure
 #
 
 ### <div id="technology">Technologies</div>
